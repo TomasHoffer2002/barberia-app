@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { getStatsDataAction } from './actions'
 import { DollarSign, Scissors, XCircle, TrendingUp, User, LayoutGrid } from 'lucide-react'
 
@@ -32,7 +32,16 @@ export default function StatsClient({ initialMonth, initialYear, availableYears,
   const [stats, setStats] = useState<Stats>(initialStats)
   const [loading, setLoading] = useState(false)
 
+  // Usamos un ref para saber si es la primera vez que carga la página
+  const isFirstRender = useRef(true)
+
   useEffect(() => {
+    // Si es la primera carga, no hacemos nada porque ya tenemos los initialStats del servidor
+    if (isFirstRender.current) {
+      isFirstRender.current = false
+      return
+    }
+
     let isMounted = true
     async function loadData() {
       setLoading(true)
@@ -42,12 +51,12 @@ export default function StatsClient({ initialMonth, initialYear, availableYears,
         setLoading(false)
       }
     }
-    // Solo recargamos si cambió el mes o año respecto al estado inicial
-    if (month !== initialMonth || year !== initialYear) {
-      loadData()
-    }
+    
+    // Ahora SIEMPRE ejecutamos la búsqueda cuando cambian los selects
+    loadData()
+
     return () => { isMounted = false }
-  }, [month, year, initialMonth, initialYear])
+  }, [month, year])
 
   const formatMoney = (amount: number) => {
     return new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 }).format(amount)
