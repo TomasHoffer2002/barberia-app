@@ -56,6 +56,11 @@ export default async function AdminPage() {
                         font-semibold text-sm rounded-lg px-4 py-2 transition">
             Ver agenda →
           </a>
+          <a href="/admin/perfil"
+            className="bg-zinc-800 hover:bg-zinc-700 border border-zinc-700
+                        text-white text-sm font-medium rounded-lg px-4 py-2 transition">
+            Perfil →
+          </a>
         </div>
       </div>
     </div>

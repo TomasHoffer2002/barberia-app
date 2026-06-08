@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Barber, Service } from '../types'
+import { Barber, Service } from './types'
 
 type Props = {
   slot: { barberId: string; time: string }
