@@ -1,0 +1,1 @@
+select * from appointments where customer_name like 'Pablo J';
