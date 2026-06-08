@@ -178,11 +178,20 @@ export async function createAppointmentAction(data: {
     }
   }
 
+  const { data: serviceData } = await adminClient
+    .from('services')
+    .select('price')
+    .eq('id', data.service_id)
+    .single()
+
+  const currentPrice = serviceData?.price ?? 0
+
   // Crear turno
   const { data: appt, error } = await adminClient
     .from('appointments')
     .insert({
       ...data,
+      price: currentPrice,
       customer_id,
       status:     'pending',
       created_by: 'client',

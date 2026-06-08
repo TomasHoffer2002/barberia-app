@@ -88,8 +88,17 @@ export async function createManualAppointmentAction(data: {
     customer_id = newCustomer?.id ?? null
   }
 
+  const { data: serviceData } = await supabase
+    .from('services')
+    .select('price')
+    .eq('id', data.service_id)
+    .single()
+
+  const currentPrice = serviceData?.price ?? 0
+
   const { error } = await supabase.from('appointments').insert({
     ...data,
+    price: currentPrice,
     customer_id,
     status:     'confirmed',  // manual = confirmado directo
     created_by: 'admin',
