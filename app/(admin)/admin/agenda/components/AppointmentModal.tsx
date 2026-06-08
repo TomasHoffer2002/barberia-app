@@ -14,7 +14,7 @@ export default function AppointmentModal({ appointment, onClose, onStatusChange,
         <div className="flex items-start justify-between mb-4">
           <div>
             <p className="text-white font-semibold">{appointment.customer_name}</p>
-            <p className="text-zinc-400 text-sm mt-0.5">
+            <p className="text-zinc-400 text-ms mt-0.5">
               {appointment.scheduled_time.slice(0,5)} · {appointment.service?.name} · {appointment.duration_min} min
             </p>
           </div>
@@ -45,15 +45,15 @@ export default function AppointmentModal({ appointment, onClose, onStatusChange,
         <div className="space-y-2">
           {appointment.status === 'pending' && (
             <div className="flex gap-2">
-              <button onClick={() => onStatusChange(appointment.id, 'confirmed')} className="flex-1 bg-emerald-700 hover:bg-emerald-600 text-white font-semibold rounded-lg py-2 text-sm transition">Confirmar</button>
-              <button onClick={() => onStatusChange(appointment.id, 'rejected')} className="flex-1 bg-red-900 hover:bg-red-800 text-red-200 font-semibold rounded-lg py-2 text-sm transition">Rechazar</button>
+              <button onClick={() => onStatusChange(appointment.id, 'confirmed')} className="flex-1 bg-emerald-700 hover:bg-emerald-600 text-white font-semibold rounded-lg py-2 text-ms transition">Confirmar</button>
+              <button onClick={() => onStatusChange(appointment.id, 'rejected')} className="flex-1 bg-red-900 hover:bg-red-800 text-red-200 font-semibold rounded-lg py-2 text-ms transition">Rechazar</button>
             </div>
           )}
           {appointment.status === 'confirmed' && (
-            <button onClick={() => onStatusChange(appointment.id, 'attended')} className="w-full bg-zinc-700 hover:bg-zinc-600 text-white font-semibold rounded-lg py-2 text-sm transition">Marcar como atendido</button>
+            <button onClick={() => onStatusChange(appointment.id, 'attended')} className="w-full bg-zinc-700 hover:bg-zinc-600 text-white font-semibold rounded-lg py-2 text-ms transition">Marcar como atendido</button>
           )}
           {['pending','confirmed'].includes(appointment.status) && (
-            <button onClick={() => onDelete(appointment.id)} className="w-full text-red-400 hover:text-red-300 text-sm py-2 transition rounded-lg hover:bg-zinc-800">Cancelar turno</button>
+            <button onClick={() => onDelete(appointment.id)} className="w-full text-red-400 hover:text-red-300 text-ms py-2 transition rounded-lg hover:bg-zinc-800">Cancelar turno</button>
           )}
         </div>
         <button onClick={onClose} className="mt-3 w-full text-zinc-600 hover:text-zinc-400 text-xs py-1 transition">Cerrar</button>

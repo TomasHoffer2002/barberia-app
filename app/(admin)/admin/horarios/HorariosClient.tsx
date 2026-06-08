@@ -158,34 +158,34 @@ export default function HorariosClient({ initialHours, initialBlocked }: Props) 
             {hours.map((h, i) => (
               <div
                 key={h.day_of_week}
-                className={`flex items-center gap-4 px-5 py-4 transition
+                className={`flex flex-col md:flex-row md:items-center gap-3 md:gap-4 px-5 py-4 transition
                   ${i < hours.length - 1 ? 'border-b border-zinc-800' : ''}
                   ${h.is_active ? '' : 'opacity-50'}`}
               >
-                {/* Toggle */}
-                <button
-                  onClick={() => toggleDay(i)}
-                  className={`relative w-11 h-6 rounded-full transition-colors shrink-0
-                    ${h.is_active ? 'bg-white' : 'bg-zinc-700'}`}
-                >
-                  <span className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full transition-transform
-                    ${h.is_active ? 'translate-x-5 bg-zinc-900' : 'bg-zinc-400'}`}
-                  />
-                </button>
+                {/* Agrupamos Toggle y Día para que no se separen */}
+                <div className="flex items-center gap-4 sm:w-40 shrink-0">
+                  <button
+                    onClick={() => toggleDay(i)}
+                    className={`relative w-11 h-6 rounded-full transition-colors shrink-0
+                      ${h.is_active ? 'bg-white' : 'bg-zinc-700'}`}
+                  >
+                    <span className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full transition-transform
+                      ${h.is_active ? 'translate-x-5 bg-zinc-900' : 'bg-zinc-400'}`}
+                    />
+                  </button>
+                  <span className="text-sm font-medium text-zinc-200">
+                    {h.day_name}
+                  </span>
+                </div>
 
-                {/* Día */}
-                <span className="w-24 text-sm font-medium text-zinc-200 shrink-0">
-                  {h.day_name}
-                </span>
-
-                {/* Horarios */}
+                {/* Horarios (toman el 100% del ancho en móvil) */}
                 {h.is_active ? (
-                  <div className="flex items-center gap-2 flex-1">
+                  <div className="flex items-center gap-2 w-full md:w-auto flex-1 mt-1 md:mt-0">
                     <input
                       type="time"
                       value={h.start_time}
                       onChange={e => updateTime(i, 'start_time', e.target.value)}
-                      className="bg-zinc-800 border border-zinc-700 text-white rounded-lg
+                      className="w-full md:w-auto flex-1 bg-zinc-800 border border-zinc-700 text-white rounded-lg
                                  px-3 py-1.5 text-sm outline-none focus:border-zinc-500 transition"
                     />
                     <span className="text-zinc-500 text-sm">a</span>
@@ -193,12 +193,12 @@ export default function HorariosClient({ initialHours, initialBlocked }: Props) 
                       type="time"
                       value={h.end_time}
                       onChange={e => updateTime(i, 'end_time', e.target.value)}
-                      className="bg-zinc-800 border border-zinc-700 text-white rounded-lg
+                      className="w-full md:w-auto flex-1 bg-zinc-800 border border-zinc-700 text-white rounded-lg
                                  px-3 py-1.5 text-sm outline-none focus:border-zinc-500 transition"
                     />
                   </div>
                 ) : (
-                  <span className="text-zinc-600 text-sm flex-1">No trabaja</span>
+                  <span className="text-zinc-600 text-sm flex-1 mt-1 md:mt-0">No trabaja</span>
                 )}
               </div>
             ))}
@@ -238,7 +238,7 @@ export default function HorariosClient({ initialHours, initialBlocked }: Props) 
           {/* Formulario nuevo bloqueo */}
           {showBlockForm && (
             <div className="bg-zinc-900 border border-zinc-700 rounded-2xl p-5 mb-4">
-              <div className="grid grid-cols-2 gap-3 mb-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
                 <div className="col-span-2">
                   <label className="block text-zinc-400 text-xs mb-1">Nombre</label>
                   <input

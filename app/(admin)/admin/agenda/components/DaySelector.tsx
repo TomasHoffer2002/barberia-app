@@ -63,7 +63,7 @@ export default function DaySelector({ dates, today, selectedDate, dayCounts, onS
       {dates.length > 14 && (
         <button
           onClick={() => setShowAll(v => !v)}
-          className="mt-2 text-zinc-600 hover:text-zinc-400 text-xs transition"
+          className="mt-2 text-zinc-600 hover:text-zinc-400 text-ms transition"
         >
           {showAll ? '← Ver menos' : 'Ver más fechas →'}
         </button>

@@ -55,7 +55,7 @@ export default function BarberColumn({ barber, date, appointments, workingHours,
   return (
     <div className={`${showBorder ? 'border-r border-zinc-800' : ''}`}>
       <div className="px-4 py-3 border-b border-zinc-800 sticky top-0 bg-zinc-950 z-10">
-        <p className="text-sm font-semibold text-white">{barber.name}</p>
+        <p className="text-ms font-semibold text-white">{barber.name}</p>
         <p className="text-xs text-zinc-500 mt-0.5">{wh.start_time.slice(0,5)} – {wh.end_time.slice(0,5)}</p>
       </div>
       <div className="divide-y divide-zinc-900">
@@ -82,7 +82,7 @@ export default function BarberColumn({ barber, date, appointments, workingHours,
                       className={`w-full px-4 py-2 flex items-start gap-3 text-left border rounded-none transition hover:brightness-110 ${STATUS_COLORS[appt.status] ?? ''}`}>
                 <span className="text-xs w-10 shrink-0 mt-0.5 opacity-70">{time}</span>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium truncate">{appt.customer_name}</p>
+                  <p className="text-ms font-medium truncate">{appt.customer_name}</p>
                   <p className="text-xs opacity-70 mt-0.5">{appt.service?.name} · {appt.duration_min} min</p>
                   {appt.status === 'pending' && <span className="text-xs bg-amber-700/50 text-amber-200 rounded px-1.5 py-0.5 mt-1 inline-block">Pendiente</span>}
                 </div>

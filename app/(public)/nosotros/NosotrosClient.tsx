@@ -1,5 +1,8 @@
 'use client'
 
+import { ArrowRight, ArrowLeft, MapPin, Award } from 'lucide-react'
+import { FaWhatsapp, FaInstagram } from 'react-icons/fa6'
+
 type Shop = {
   name:        string
   description: string | null
@@ -24,56 +27,62 @@ export default function NosotrosClient({ shop, barbers }: { shop: Shop; barbers:
     <div className="min-h-screen bg-zinc-950 text-white">
 
       {/* ── HERO ─────────────────────────────────────────────────────── */}
-      <div className="border-b border-zinc-800">
-        <div className="max-w-2xl mx-auto px-6 py-12 text-center">
+      <div className="border-b border-zinc-800 relative overflow-hidden">
+        
+        {/* Brillo de fondo sutil */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-150 h-75 bg-zinc-800/20 rounded-full blur-[100px] pointer-events-none" />
 
-          {/* Logo */}
+        <div className="max-w-2xl mx-auto px-6 py-12 text-center relative z-10">
+
+          {/* Logo con altura ajustada (como en el inicio) */}
           <div className="flex justify-center mb-6">
             {shop.logo_url ? (
               <img src={shop.logo_url} alt={shop.name}
-                   className="w-24 h-24 object-contain rounded-2xl" />
+                   className="h-20 sm:h-24 w-auto max-w-full object-contain drop-shadow-2xl" />
             ) : (
               <div className="w-24 h-24 bg-zinc-900 border border-zinc-800 rounded-2xl
-                              flex items-center justify-center text-5xl">
+                              flex items-center justify-center text-5xl shadow-xl shadow-black/50">
                 ✂
               </div>
             )}
           </div>
 
-          <h1 className="text-3xl font-bold text-white mb-3">{shop.name}</h1>
+          <h1 className="text-3xl font-extrabold text-white tracking-tight mb-4">{shop.name}</h1>
 
           {shop.description && (
-            <p className="text-zinc-400 text-sm leading-relaxed max-w-md mx-auto">
+            <p className="text-zinc-400 text-sm leading-relaxed max-w-md mx-auto mb-2">
               {shop.description}
             </p>
           )}
 
           {/* Datos de contacto de la barbería */}
           {(shop.phone || shop.instagram || shop.address) && (
-            <div className="flex flex-wrap justify-center gap-3 mt-6">
+            <div className="flex flex-wrap justify-center gap-3 mt-8">
               {shop.phone && (
                 <a href={`https://wa.me/${shop.phone.replace(/\D/g, '')}`}
                    target="_blank" rel="noopener noreferrer"
                    className="flex items-center gap-2 bg-zinc-900 border border-zinc-800
-                              hover:border-zinc-600 text-zinc-300 text-sm rounded-xl
-                              px-4 py-2.5 transition">
-                  <span>📱</span> {shop.phone}
+                              hover:border-zinc-600 hover:text-white text-zinc-300 text-sm rounded-xl
+                              px-4 py-2.5 transition-colors">
+                  <FaWhatsapp className="text-emerald-400 text-base" /> {shop.phone}
                 </a>
               )}
               {shop.instagram && (
                 <a href={`https://instagram.com/${shop.instagram.replace('@', '')}`}
                    target="_blank" rel="noopener noreferrer"
                    className="flex items-center gap-2 bg-zinc-900 border border-zinc-800
-                              hover:border-zinc-600 text-zinc-300 text-sm rounded-xl
-                              px-4 py-2.5 transition">
-                  <span>📸</span> @{shop.instagram}
+                              hover:border-zinc-600 hover:text-white text-zinc-300 text-sm rounded-xl
+                              px-4 py-2.5 transition-colors">
+                  <FaInstagram className="text-purple-400 text-base" /> @{shop.instagram.replace('@', '')}
                 </a>
               )}
               {shop.address && (
-                <span className="flex items-center gap-2 bg-zinc-900 border border-zinc-800
-                                 text-zinc-400 text-sm rounded-xl px-4 py-2.5">
-                  <span>📍</span> {shop.address}
-                </span>
+                <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(shop.address + ', General Pico, La Pampa, Argentina')}`}
+                   target="_blank" rel="noopener noreferrer"
+                   className="flex items-center gap-2 bg-zinc-900 border border-zinc-800
+                              hover:border-zinc-600 hover:text-white text-zinc-300 text-sm rounded-xl px-4 py-2.5 transition-colors">
+                  <MapPin size={16} className="text-red-400" /> {shop.address}
+                </a>
               )}
             </div>
           )}
@@ -92,15 +101,15 @@ export default function NosotrosClient({ shop, barbers }: { shop: Shop; barbers:
             <div className="space-y-4">
               {barbers.map(b => (
                 <div key={b.id}
-                     className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6">
+                     className="bg-zinc-900 border border-zinc-800 rounded-3xl p-6 shadow-xl shadow-black/20">
 
                   {/* Header del barbero */}
-                  <div className="flex items-center gap-4 mb-4">
+                  <div className="flex items-center gap-5 mb-5">
                     {b.avatar_url ? (
                       <img src={b.avatar_url} alt={b.name}
                            className="w-16 h-16 rounded-full object-cover border-2 border-zinc-700 shrink-0" />
                     ) : (
-                      <div className="w-16 h-16 rounded-full bg-zinc-700 border-2 border-zinc-600
+                      <div className="w-16 h-16 rounded-full bg-zinc-800 border-2 border-zinc-700
                                       flex items-center justify-center text-2xl font-bold
                                       text-zinc-400 shrink-0">
                         {b.name.charAt(0).toUpperCase()}
@@ -110,21 +119,21 @@ export default function NosotrosClient({ shop, barbers }: { shop: Shop; barbers:
                       <h3 className="text-white font-semibold text-lg">{b.name}</h3>
 
                       {/* Redes y contacto */}
-                      <div className="flex flex-wrap gap-2 mt-1.5">
+                      <div className="flex flex-wrap gap-4 mt-2">
                         {b.phone && (
                           <a href={`https://wa.me/${b.phone.replace(/\D/g, '')}`}
                              target="_blank" rel="noopener noreferrer"
-                             className="text-emerald-400 hover:text-emerald-300
-                                        text-sm transition flex items-center gap-1">
-                            📱 WhatsApp
+                             className="text-zinc-300 hover:text-white
+                                        text-sm transition flex items-center gap-1.5 font-medium">
+                            <FaWhatsapp className="text-emerald-400 text-base" /> WhatsApp
                           </a>
                         )}
                         {b.instagram && (
                           <a href={`https://instagram.com/${b.instagram.replace('@', '')}`}
                              target="_blank" rel="noopener noreferrer"
-                             className="text-purple-400 hover:text-purple-300
-                                        text-sm transition flex items-center gap-1">
-                            📸 @{b.instagram}
+                             className="text-zinc-300 hover:text-white
+                                        text-sm transition flex items-center gap-1.5 font-medium">
+                            <FaInstagram className="text-purple-400 text-base" /> @{b.instagram.replace('@', '')}
                           </a>
                         )}
                       </div>
@@ -133,7 +142,7 @@ export default function NosotrosClient({ shop, barbers }: { shop: Shop; barbers:
 
                   {/* Bio */}
                   {b.bio && (
-                    <p className="text-zinc-400 text-sm leading-relaxed mb-4">
+                    <p className="text-zinc-400 text-sm leading-relaxed mb-5">
                       {b.bio}
                     </p>
                   )}
@@ -141,15 +150,15 @@ export default function NosotrosClient({ shop, barbers }: { shop: Shop; barbers:
                   {/* Certificaciones */}
                   {b.certifications && b.certifications.length > 0 && (
                     <div>
-                      <p className="text-zinc-600 text-sm font-medium uppercase tracking-wider mb-2">
+                      <p className="text-zinc-600 text-xs font-semibold uppercase tracking-wider mb-3">
                         Títulos y certificaciones
                       </p>
                       <div className="flex flex-wrap gap-2">
                         {b.certifications.map((c, i) => (
                           <span key={i}
                                 className="bg-zinc-800 border border-zinc-700 text-zinc-300
-                                           text-sm rounded-lg px-3 py-1.5 flex items-center gap-1.5">
-                            <span className="text-amber-400">🏆</span> {c}
+                                           text-xs font-medium rounded-xl px-3 py-2 flex items-center gap-2">
+                            <Award size={14} className="text-amber-500" /> {c}
                           </span>
                         ))}
                       </div>
@@ -161,23 +170,22 @@ export default function NosotrosClient({ shop, barbers }: { shop: Shop; barbers:
           </>
         )}
 
-        {/* CTA */}
-        <div className="mt-10 text-center">
+        {/* ── CTA ──────────────────────────────────────────────────────── */}
+        <div className="mt-12 flex flex-col items-center gap-3">
           <a href="/turnos"
-             className="inline-block bg-white text-zinc-900 font-semibold
-                        rounded-xl px-8 py-3.5 text-sm hover:bg-zinc-100 transition">
-            Pedir turno →
+             className="group relative flex items-center justify-center gap-2 bg-white text-zinc-950 font-bold rounded-2xl px-8 py-4 text-sm hover:bg-zinc-100 transition-all hover:scale-[1.02] active:scale-[0.98] shadow-xl shadow-white/5">
+            Pedir turno
+            <ArrowRight size={18} strokeWidth={2.5} className="group-hover:translate-x-1 transition-transform" />
           </a>
-          <div className="mt-3">
-            <a href="/"
-               className="text-zinc-600 hover:text-zinc-400 text-sm transition">
-              ← Volver al inicio
-            </a>
-          </div>
+          
+          <a href="/"
+             className="group flex items-center justify-center gap-2 text-zinc-500 hover:text-zinc-300 text-sm font-medium transition-colors mt-2">
+            <ArrowLeft size={16} strokeWidth={2} className="group-hover:-translate-x-1 transition-transform" />
+            Volver al inicio
+          </a>
         </div>
 
       </div>
-
     </div>
   )
 }

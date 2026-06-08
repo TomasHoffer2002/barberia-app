@@ -130,14 +130,14 @@ export default function AgendaClient({ today, dates, dayCounts, initialData, ser
   return (
     <div className="min-h-screen bg-zinc-950 text-white">
       {toast && (
-        <div className={`fixed top-4 right-4 z-50 px-4 py-3 rounded-lg text-sm font-medium shadow-lg ${toast.ok ? 'bg-emerald-900 border-emerald-700 text-emerald-200' : 'bg-red-950 border-red-800 text-red-300'}`}>
+        <div className={`fixed top-4 right-4 z-50 px-4 py-3 rounded-lg text-ms font-medium shadow-lg ${toast.ok ? 'bg-emerald-900 border-emerald-700 text-emerald-200' : 'bg-red-950 border-red-800 text-red-300'}`}>
           {toast.ok ? '✓ ' : '✕ '}{toast.msg}
         </div>
       )}
 
       <div className="border-b border-zinc-800 px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <a href="/admin" className="text-zinc-500 hover:text-white transition text-sm">← Panel</a>
+          <a href="/admin" className="text-zinc-500 hover:text-white transition text-ms">← Panel</a>
           <span className="text-zinc-700">/</span><h1 className="text-lg font-bold">Agenda</h1>
         </div>
         <span className="text-zinc-500 text-xs">{selectedDate}</span>
@@ -153,7 +153,7 @@ export default function AgendaClient({ today, dates, dayCounts, initialData, ser
             {barbers.length > 1 && (
               <div className="flex lg:hidden border-b border-zinc-800">
                 {barbers.map((b, i) => (
-                  <button key={b.id} onClick={() => setActiveBarber(i)} className={`flex-1 py-2.5 text-sm font-medium transition border-b-2 ${activeBarber === i ? 'border-white text-white' : 'border-transparent text-zinc-500 hover:text-zinc-300'}`}>{b.name}</button>
+                  <button key={b.id} onClick={() => setActiveBarber(i)} className={`flex-1 py-2.5 text-ms font-medium transition border-b-2 ${activeBarber === i ? 'border-white text-white' : 'border-transparent text-zinc-500 hover:text-zinc-300'}`}>{b.name}</button>
                 ))}
               </div>
             )}
@@ -170,7 +170,7 @@ export default function AgendaClient({ today, dates, dayCounts, initialData, ser
               </div>
             )}
             
-            {barbers.length === 0 && <div className="flex flex-col items-center justify-center py-24 text-zinc-500"><p className="text-sm">No hay barberos activos</p></div>}
+            {barbers.length === 0 && <div className="flex flex-col items-center justify-center py-24 text-zinc-500"><p className="text-ms">No hay barberos activos</p></div>}
           </div>
 
           <QueuePanel queue={queue} services={services} onAddQueue={handleAddQueue} onAttendQueue={handleAttendQueue} onRemoveQueue={handleRemoveQueue} />

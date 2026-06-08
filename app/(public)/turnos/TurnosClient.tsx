@@ -129,10 +129,6 @@ export default function TurnosClient({ barbers, services, today, dates, dayCount
         <div className="text-center mb-8">
           <h1 className="text-2xl font-bold text-white">✂ BarberApp</h1>
           <p className="text-zinc-500 text-sm mt-1">Pedí tu turno online</p>
-          <a href="/nosotros"
-            className="text-zinc-600 hover:text-zinc-400 text-xs mt-1 inline-block transition">
-            ¿Quiénes somos? →
-          </a>
         </div>
 
         {/* Error global */}

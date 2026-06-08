@@ -28,7 +28,7 @@ export default function QueuePanel({ queue, services, onAddQueue, onAttendQueue,
       <div className="p-4">
         <div className="flex items-center justify-between mb-3">
           <div>
-            <h3 className="text-sm font-semibold text-white">Cola del día</h3>
+            <h3 className="text-ms font-semibold text-white">Cola del día</h3>
             <p className="text-xs text-zinc-500 mt-0.5">{waitingCount} esperando</p>
           </div>
           <button
@@ -43,14 +43,14 @@ export default function QueuePanel({ queue, services, onAddQueue, onAttendQueue,
           <div className="bg-zinc-900 border border-zinc-700 rounded-xl p-3 mb-3 space-y-2">
             <input type="text" placeholder="Nombre" value={queueForm.name}
                    onChange={e => setQueueForm(p => ({ ...p, name: e.target.value }))}
-                   className="w-full bg-zinc-800 border border-zinc-700 text-white rounded-lg px-3 py-2 text-sm outline-none focus:border-zinc-500 transition" />
+                   className="w-full bg-zinc-800 border border-zinc-700 text-white rounded-lg px-3 py-2 text-ms outline-none focus:border-zinc-500 transition" />
             <select value={queueForm.service_name}
                     onChange={e => setQueueForm(p => ({ ...p, service_name: e.target.value }))}
-                    className="w-full bg-zinc-800 border border-zinc-700 text-white rounded-lg px-3 py-2 text-sm outline-none focus:border-zinc-500 transition">
+                    className="w-full bg-zinc-800 border border-zinc-700 text-white rounded-lg px-3 py-2 text-ms outline-none focus:border-zinc-500 transition">
               <option value="">Servicio...</option>
               {services.map(s => <option key={s.id} value={s.name}>{s.name}</option>)}
             </select>
-            <button onClick={handleAdd} className="w-full bg-white text-zinc-900 font-semibold rounded-lg py-1.5 text-sm hover:bg-zinc-100 transition">
+            <button onClick={handleAdd} className="w-full bg-white text-zinc-900 font-semibold rounded-lg py-1.5 text-ms hover:bg-zinc-100 transition">
               Agregar
             </button>
           </div>
@@ -62,7 +62,7 @@ export default function QueuePanel({ queue, services, onAddQueue, onAttendQueue,
             <div key={q.id} className="bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2.5 flex items-center gap-2">
               <span className="text-zinc-600 text-xs font-bold w-5">#{q.position}</span>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-white truncate">{q.name}</p>
+                <p className="text-ms font-medium text-white truncate">{q.name}</p>
                 <p className="text-xs text-zinc-500">{q.service_name}</p>
               </div>
               <div className="flex gap-1">

@@ -14,7 +14,7 @@ export default async function AgendaPage() {
   if (!user) redirect('/login')
 
   const today   = getTodayLocal()
-  const dates = getNextDays(today, 14)
+  const dates = getNextDays(today, 60)
   const counts  = await getWeekSummaryAction(dates)
   const initial = await getAgendaDataAction(today)
 

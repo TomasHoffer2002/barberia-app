@@ -1,7 +1,6 @@
 'use client'
 
 import { useRef, useState } from 'react'
-import Image from 'next/image'
 import {
   saveBarberProfileAction, uploadAvatarAction,
   saveBarbershopAction, uploadLogoAction,
@@ -137,10 +136,9 @@ export default function PerfilClient({ barber: initial, barbershop: initialShop 
             <div className="flex items-center gap-5 mb-6">
               <div className="relative">
                 {barber.avatar_url ? (
-                  <Image
+                  <img
                     src={barber.avatar_url}
                     alt={barber.name}
-                    width={80} height={80}
                     className="w-20 h-20 rounded-full object-cover border-2 border-zinc-700"
                   />
                 ) : (
@@ -184,7 +182,7 @@ export default function PerfilClient({ barber: initial, barbershop: initialShop 
                                   px-4 py-2.5 text-sm outline-none focus:border-zinc-500 transition" />
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block text-zinc-400 text-xs mb-1">Teléfono / WhatsApp</label>
                   <input type="tel" value={barber.phone ?? ''}
@@ -267,12 +265,10 @@ export default function PerfilClient({ barber: initial, barbershop: initialShop 
             <div className="flex items-center gap-5 mb-6">
               <div className="relative">
                 {shop.logo_url ? (
-                  <Image
+                  <img
                     src={shop.logo_url}
                     alt="Logo"
-                    width={80} height={80}
-                    className="w-20 h-20 rounded-2xl object-contain bg-zinc-800 p-1
-                               border-2 border-zinc-700"
+                    className="w-20 h-20 rounded-2xl object-contain bg-zinc-800 p-1 border-2 border-zinc-700"
                   />
                 ) : (
                   <div className="w-20 h-20 rounded-2xl bg-zinc-800 border-2 border-zinc-700
@@ -327,7 +323,7 @@ export default function PerfilClient({ barber: initial, barbershop: initialShop 
                                      px-4 py-2.5 text-sm outline-none focus:border-zinc-500 transition resize-none" />
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block text-zinc-400 text-xs mb-1">Teléfono</label>
                   <input type="tel" value={shop.phone ?? ''}

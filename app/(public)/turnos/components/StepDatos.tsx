@@ -60,7 +60,7 @@ export default function StepDatos({ booking, onChange, onSubmit, submitting }: P
             onChange={e => onChange('phone', e.target.value)}
             onBlur={handlePhoneBlur}
             autoComplete="tel"
-            placeholder="2923 000000"
+            placeholder="2302 000000"
             className="w-full bg-zinc-800 border border-zinc-700 text-white rounded-lg
                        px-4 py-2.5 text-sm outline-none focus:border-zinc-500 transition
                        placeholder:text-zinc-600"
