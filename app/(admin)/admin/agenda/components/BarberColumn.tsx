@@ -91,7 +91,7 @@ export default function BarberColumn({ barber, date, appointments, workingHours,
           }
 
           return (
-            <button key={time} onClick={() => onClickSlot(time)} className="w-full px-4 py-2 flex items-center gap-3 text-left hover:bg-zinc-900 transition group min-h-[48px]">
+            <button key={time} onClick={() => onClickSlot(time)} className="w-full px-4 py-2 flex items-center gap-3 text-left hover:bg-zinc-900 transition group min-h-12">
               <span className="text-zinc-700 text-xs w-10 shrink-0">{time}</span>
               <span className="text-zinc-800 group-hover:text-zinc-600 text-xs transition">+ libre</span>
             </button>
