@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { cancelAppointmentByTokenAction } from '../../turnos/actions'
+import { ArrowLeft } from 'lucide-react'
 
 const MONTH_FULL = ['enero','febrero','marzo','abril','mayo','junio',
                     'julio','agosto','septiembre','octubre','noviembre','diciembre']
@@ -27,8 +28,9 @@ type Appointment = {
   duration_min:   number
   customer_name:  string
   cancel_token:   string
-  barber:         { name: string } | null
-  service:        { name: string } | null
+  // Ahora acepta tanto objeto como array de objetos
+  barber:         { name: string } | { name: string }[] | null
+  service:        { name: string } | { name: string }[] | null
 }
 
 export default function CancelClient({ appointment: initial, token }: { appointment: Appointment; token: string }) {
@@ -40,6 +42,13 @@ export default function CancelClient({ appointment: initial, token }: { appointm
   const status = STATUS_MAP[appt.status] ?? { label: appt.status, color: 'text-zinc-400' }
   const canCancel = ['pending', 'confirmed'].includes(appt.status)
 
+  // Función para sacar el nombre de manera segura
+  const getRealName = (field: { name: string } | { name: string }[] | null) => {
+    if (!field) return '—'
+    if (Array.isArray(field)) return field[0]?.name ?? '—'
+    return field.name
+  }
+
   async function handleCancel() {
     setCancelling(true)
     const result = await cancelAppointmentByTokenAction(token)
@@ -50,7 +59,7 @@ export default function CancelClient({ appointment: initial, token }: { appointm
   }
 
   return (
-    <div className="min-h-screen bg-zinc-950 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-zinc-950 flex flex-col items-center justify-center p-4">
       <div className="w-full max-w-sm">
 
         <div className="text-center mb-6">
@@ -66,8 +75,8 @@ export default function CancelClient({ appointment: initial, token }: { appointm
           <div className="space-y-2 mb-6">
             {[
               ['Nombre',   appt.customer_name],
-              ['Barbero',  appt.barber?.name ?? '—'],
-              ['Servicio', appt.service?.name ?? '—'],
+              ['Barbero',  getRealName(appt.barber)],
+              ['Servicio', getRealName(appt.service)],
               ['Día',      formatDate(appt.scheduled_date)],
               ['Hora',     appt.scheduled_time.slice(0, 5)],
             ].map(([label, value]) => (

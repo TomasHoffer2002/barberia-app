@@ -1,5 +1,7 @@
 'use client'
 
+import { ArrowLeft } from "lucide-react"
+
 const MONTH_FULL = ['enero','febrero','marzo','abril','mayo','junio',
                     'julio','agosto','septiembre','octubre','noviembre','diciembre']
 
@@ -70,12 +72,13 @@ export default function StepConfirmacion({
         >
           Compartir / Guardar link del turno
         </button>
-        <button
-          onClick={onNew}
-          className="w-full text-zinc-600 hover:text-zinc-400 text-sm py-2 transition"
+        <a 
+          href="/"
+          className="group flex items-center justify-center gap-2 text-zinc-500 hover:text-zinc-300 font-medium px-6 py-4 text-sm transition-colors mt-4"
         >
-          Pedir otro turno
-        </button>
+          <ArrowLeft size={16} strokeWidth={2} className="group-hover:-translate-x-1 transition-transform" />
+          Volver al inicio
+        </a>
       </div>
     </div>
   )

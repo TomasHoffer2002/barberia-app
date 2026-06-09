@@ -325,9 +325,19 @@ export async function getAppointmentByTokenAction(token: string) {
 export async function cancelAppointmentByTokenAction(token: string) {
   const adminClient = createAdminClient()
 
+  // 1. Buscamos el turno, traemos los datos necesarios para el aviso
   const { data: appt } = await adminClient
     .from('appointments')
-    .select('id, status')
+    .select(`
+      id, 
+      status, 
+      barber_id, 
+      customer_name, 
+      scheduled_date, 
+      scheduled_time,
+      barber:barber_id (name),
+      service:service_id (name)
+    `)
     .eq('cancel_token', token)
     .single()
 
@@ -336,11 +346,68 @@ export async function cancelAppointmentByTokenAction(token: string) {
     return { error: 'Este turno ya no se puede cancelar' }
   }
 
+  // 2. Actualizamos el estado a cancelado en la base de datos
   const { error } = await adminClient
     .from('appointments')
     .update({ status: 'cancelled' })
     .eq('cancel_token', token)
 
   if (error) return { error: 'No se pudo cancelar el turno' }
+
+  // 3. Bypass a TypeScript con 'as any' para extraer los nombres sin errores
+  const barberInfo = appt.barber as any
+  const serviceInfo = appt.service as any
+
+  const barberName = Array.isArray(barberInfo) ? barberInfo[0]?.name : (barberInfo?.name ?? 'el barbero')
+  const serviceName = Array.isArray(serviceInfo) ? serviceInfo[0]?.name : (serviceInfo?.name ?? 'servicio')
+  
+  const dateLabel = appt.scheduled_date
+  const timeLabel = appt.scheduled_time.slice(0, 5)
+
+  // ── 4. Disparamos las notificaciones (Fire-and-forget) ────────────────────
+  
+  // Web Push
+  sendPushToBarber(
+    appt.barber_id,
+    '❌ Turno Cancelado',
+    `${appt.customer_name} canceló su turno de ${serviceName} el ${dateLabel} a las ${timeLabel}`,
+    '/admin/agenda'
+  ).catch(() => {})
+
+  // WhatsApp via CallMeBot
+  sendWhatsAppAlert(
+    `❌ *Turno Cancelado*\n\n` +
+    `👤 ${appt.customer_name} canceló su turno.\n` +
+    `💈 ${serviceName} con ${barberName}\n` +
+    `📅 ${dateLabel} a las ${timeLabel}\n\n` +
+    `El espacio ya vuelve a estar disponible en la agenda.`
+  ).catch(() => {})
+
   return { success: true }
+}
+
+export async function getNextAppointmentByPhoneAction(phone: string) {
+  const adminClient = createAdminClient()
+  const today = getTodayLocal() 
+
+  const { data, error } = await adminClient
+    .from('appointments')
+    .select(`
+      status,
+      scheduled_date,
+      scheduled_time,
+      reject_reason,
+      barber:barber_id (name),
+      service:service_id (name)
+    `)
+    .eq('customer_phone', phone)
+    .gte('scheduled_date', today) // Solo trae de hoy en adelante
+    .order('scheduled_date', { ascending: true }) // Ordena cronológicamente
+    .order('scheduled_time', { ascending: true })
+    .limit(1) // Solo nos interesa el "siguiente" turno
+
+  if (error) return { error: 'Hubo un problema al buscar el turno.' }
+  if (!data || data.length === 0) return { appointment: null }
+
+  return { appointment: data[0] }
 }

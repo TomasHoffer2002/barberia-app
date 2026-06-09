@@ -9,6 +9,7 @@ import StepFecha      from './components/StepFecha'
 import StepHorario    from './components/StepHorario'
 import StepDatos      from './components/StepDatos'
 import StepConfirmacion from './components/StepConfirmacion'
+import { ArrowLeft } from 'lucide-react'
 
 type Props = {
   barbers:   PublicBarber[]
@@ -202,6 +203,13 @@ export default function TurnosClient({ barbers, services, today, dates, dayCount
 
         </div>
       </div>
+      <a 
+        href="/"
+        className="group flex items-center justify-center gap-2 text-zinc-500 hover:text-zinc-300 font-medium px-6 py-3 text-sm transition-colors mt-6"
+      >
+        <ArrowLeft size={16} strokeWidth={2} className="group-hover:-translate-x-1 transition-transform" />
+        Volver al inicio
+      </a>
     </div>
   )
 }
