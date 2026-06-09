@@ -1,16 +1,16 @@
 import { createClient } from '@/lib/supabase/server'
 import { ArrowRight } from 'lucide-react'
+import ConsultaTurnoClient from '@/app/(public)/turnos/ConsultaTurnoClient'
 
 export default async function HomePage() {
   const supabase = await createClient()
   const { data: shop } = await supabase
     .from('barbershop')
-    .select('name, description, logo_url')
+    .select('name, logo_url')
     .eq('id', 1)
     .single()
 
   const name    = shop?.name        ?? 'BarberApp'
-  const desc    = shop?.description ?? 'Tu barbería, online.'
   const logoUrl = shop?.logo_url
 
   return (
@@ -41,11 +41,6 @@ export default async function HomePage() {
         <h1 className="text-4xl sm:text-5xl font-extrabold text-white tracking-tight mb-3">
           {name}
         </h1>
-        {desc && (
-          <p className="text-zinc-400 text-base mb-10 max-w-sm mx-auto leading-relaxed">
-            {desc}
-          </p>
-        )}
 
         {/* ── Botones ── */}
         <div className="flex flex-col gap-3">
@@ -72,6 +67,10 @@ export default async function HomePage() {
               <span className="text-lg">💈</span> Quiénes somos
             </a>
           </div>
+
+          <section className="py-12 px-4">
+          < ConsultaTurnoClient />
+          </section>
           
         </div>
 
