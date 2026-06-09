@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { logoutAction } from '@/app/(auth)/login/actions'
 import { CalendarDays, Clock, Scissors, User, LogOut, ChevronRight, BarChart3} from 'lucide-react'
+import { Bell } from 'lucide-react'
 
 export default async function AdminPage() {
   const supabase = await createClient()
@@ -107,6 +108,18 @@ export default async function AdminPage() {
               <ChevronRight size={16} className="text-zinc-600 group-hover:text-zinc-400 group-hover:translate-x-1 transition-all" />
             </h3>
             <p className="text-zinc-500 text-sm">Ingresos, cortes y rendimiento</p>
+          </a>
+
+          <a href="/admin/notificaciones"
+             className="group bg-zinc-900 border border-zinc-800 hover:border-zinc-600 rounded-3xl p-6 transition-all hover:bg-zinc-800/50">
+            <div className="bg-zinc-800 w-12 h-12 rounded-xl flex items-center justify-center mb-4 group-hover:bg-zinc-700 transition-colors">
+              <Bell size={24} className="text-zinc-300 group-hover:text-white" />
+            </div>
+            <h3 className="text-white font-semibold text-lg mb-1 flex items-center justify-between">
+              Notificaciones
+              <ChevronRight size={16} className="text-zinc-600 group-hover:text-zinc-400 group-hover:translate-x-1 transition-all" />
+            </h3>
+            <p className="text-zinc-500 text-sm">Configurar alertas y avisos</p>
           </a>
 
           <a href="/admin/perfil"

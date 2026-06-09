@@ -3,7 +3,76 @@
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { getTodayLocal, getDayOfWeek, getNextDays } from '@/lib/utils/date'
+import webpush from 'web-push'
 import { revalidatePath } from 'next/cache'
+
+webpush.setVapidDetails(
+  process.env.VAPID_SUBJECT!,
+  process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
+  process.env.VAPID_PRIVATE_KEY!
+)
+
+// ─── FUNCIÓN AUXILIAR: enviar push a un barbero ───────────────────────────────
+
+async function sendPushToBarber(
+  barberId:     string,
+  title:        string,
+  body:         string,
+  url:          string
+) {
+  // Usamos adminClient para leer suscripciones sin restricción de sesión
+  // (esta action la llama un usuario anónimo — el cliente)
+  const adminClient = createAdminClient()
+
+  const { data: subs } = await adminClient
+    .from('push_subscriptions')
+    .select('endpoint, p256dh, auth')
+    .eq('barber_id', barberId)
+
+  if (!subs?.length) return
+
+  const payload = JSON.stringify({ title, body, icon: '/icons/icon-192.png', url })
+
+  // Disparar todas las notificaciones en paralelo
+  // Si una suscripción expiró (error 410), la borramos automáticamente
+  await Promise.allSettled(
+    subs.map(async sub => {
+      try {
+        await webpush.sendNotification(
+          { endpoint: sub.endpoint, keys: { p256dh: sub.p256dh, auth: sub.auth } },
+          payload
+        )
+      } catch (err: any) {
+        if (err.statusCode === 410 || err.statusCode === 404) {
+          // Suscripción expirada o inválida — limpiar
+          await adminClient
+            .from('push_subscriptions')
+            .delete()
+            .eq('endpoint', sub.endpoint)
+        }
+      }
+    })
+  )
+}
+
+// ─── FUNCIÓN AUXILIAR: enviar WhatsApp via CallMeBot ─────────────────────────
+
+async function sendWhatsAppAlert(message: string) {
+  const phone  = process.env.CALLMEBOT_PHONE
+  const apiKey = process.env.CALLMEBOT_APIKEY
+
+  // Si no están configuradas las vars, no romper — simplemente no enviar
+  if (!phone || !apiKey) return
+
+  const encoded = encodeURIComponent(message)
+  const url = `https://api.callmebot.com/whatsapp.php?phone=${phone}&text=${encoded}&apikey=${apiKey}`
+
+  try {
+    await fetch(url)
+  } catch {
+    // No bloquear el flujo principal si falla WhatsApp
+  }
+}
 
 // ─── DATOS INICIALES ──────────────────────────────────────────────────────────
 
@@ -178,13 +247,15 @@ export async function createAppointmentAction(data: {
     }
   }
 
-  const { data: serviceData } = await adminClient
+  // 1. BUSCAMOS PRECIO Y NOMBRE EN UNA SOLA CONSULTA
+  const { data: serviceInfo } = await adminClient
     .from('services')
-    .select('price')
+    .select('price, name')
     .eq('id', data.service_id)
     .single()
 
-  const currentPrice = serviceData?.price ?? 0
+  const currentPrice = serviceInfo?.price ?? 0
+  const serviceName = serviceInfo?.name ?? 'servicio'
 
   // Crear turno
   const { data: appt, error } = await adminClient
@@ -200,6 +271,34 @@ export async function createAppointmentAction(data: {
     .single()
 
   if (error) return { error: 'No se pudo crear el turno. Intentá de nuevo.' }
+
+  // ── Buscar datos del barbero para el mensaje ──────────────────
+  const { data: barberData } = await adminClient
+    .from('barbers')
+    .select('name')
+    .eq('id', data.barber_id) // Corregido: usamos directamente data.barber_id
+    .single()
+
+  const barberName  = barberData?.name  ?? 'el barbero'
+  const dateLabel   = data.scheduled_date   // YYYY-MM-DD
+  const timeLabel   = data.scheduled_time   // HH:MM
+
+  // ── 1. Web Push ───────────────────────────────────────────────────────────
+  sendPushToBarber(
+    data.barber_id,
+    '✂ Nuevo turno',
+    `${data.customer_name} — ${serviceName} el ${dateLabel} a las ${timeLabel}`,
+    '/admin/agenda'
+  ).catch(() => {})
+
+  // ── 2. WhatsApp via CallMeBot ─────────────────────────────────────────────
+  sendWhatsAppAlert(
+    `✂ Nuevo turno en BarberApp\n` +
+    `👤 ${data.customer_name}\n` +
+    `💈 ${serviceName} con ${barberName}\n` +
+    `📅 ${dateLabel} a las ${timeLabel}\n` +
+    `📱 ${data.customer_phone}`
+  ).catch(() => {})
 
   return { success: true, appointmentId: appt.id, cancelToken: appt.cancel_token }
 }
