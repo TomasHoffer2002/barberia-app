@@ -1,5 +1,6 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import ServiceWorkerRegistration from '@/components/ServiceWorkerRegistration'
 import "./globals.css";
 
 const geistSans = Geist({
@@ -13,9 +14,23 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "BarberApp",
-  description: "Sistema de turnos para barberías",
-};
+  title:       'BarberApp',
+  description: 'Sistema de turnos para barberías',
+  manifest:    '/manifest.webmanifest',
+  appleWebApp: {
+    capable:          true,
+    statusBarStyle:   'black-translucent',
+    title:            'BarberApp',
+  },
+}
+
+export const viewport: Viewport = {
+  themeColor:           '#09090b',
+  width:                'device-width',
+  initialScale:         1,
+  maximumScale:         1,
+  viewportFit:          'cover',
+}
 
 export default function RootLayout({
   children,
@@ -27,7 +42,10 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full antialiased">{children}</body>
+      <body className="min-h-full antialiased">
+        <ServiceWorkerRegistration />
+        {children}
+      </body>
     </html>
   );
 }

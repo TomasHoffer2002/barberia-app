@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
+import InstallPWA from '@/components/InstallPWA'
 
 export default async function AdminLayout({
   children,
@@ -28,5 +29,10 @@ export default async function AdminLayout({
     redirect('/admin-setup')
   }
 
-  return <>{children}</>
+  return (
+    <>
+      <InstallPWA />
+      {children}
+    </>
+  )
 }
