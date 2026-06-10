@@ -60,7 +60,7 @@ export default function StepDatos({ booking, onChange, onSubmit, submitting }: P
             onChange={e => onChange('phone', e.target.value)}
             onBlur={handlePhoneBlur}
             autoComplete="tel"
-            placeholder="2302 000000"
+            placeholder="2302000000"
             className="w-full bg-zinc-800 border border-zinc-700 text-white rounded-lg
                        px-4 py-2.5 text-sm outline-none focus:border-zinc-500 transition
                        placeholder:text-zinc-600"
@@ -104,15 +104,24 @@ export default function StepDatos({ booking, onChange, onSubmit, submitting }: P
           </div>
         </div>
 
-        <button
-          onClick={onSubmit}
-          disabled={submitting || !booking.name.trim() || !booking.phone.trim()}
-          className="w-full bg-white text-zinc-900 font-semibold rounded-lg py-3 text-sm
-                     hover:bg-zinc-100 active:bg-zinc-200 transition mt-2
-                     disabled:opacity-40 disabled:cursor-not-allowed"
-        >
-          {submitting ? 'Enviando...' : 'Confirmar turno →'}
-        </button>
+        {/* Validamos que el teléfono tenga exactamente 10 números (ignorando espacios/guiones) */}
+        {(() => {
+          // Extraemos solo los números del texto ingresado
+          const phoneDigits = booking.phone.replace(/\D/g, '');
+          const isPhoneValid = phoneDigits.length === 10;
+          
+          return (
+            <button
+              onClick={onSubmit}
+              disabled={submitting || !booking.name.trim() || !isPhoneValid}
+              className="w-full bg-white text-zinc-900 font-semibold rounded-lg py-3 text-sm
+                         hover:bg-zinc-100 active:bg-zinc-200 transition mt-2
+                         disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              {submitting ? 'Enviando...' : 'Confirmar turno →'}
+            </button>
+          )
+        })()}
       </div>
     </div>
   )

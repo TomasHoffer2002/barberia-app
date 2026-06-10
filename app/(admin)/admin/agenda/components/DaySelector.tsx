@@ -19,11 +19,31 @@ type Props = {
 }
 
 export default function DaySelector({ dates, today, selectedDate, dayCounts, onSelectDate }: Props) {
-  const [showAll, setShowAll] = useState(false)
-  const visible = showAll ? dates : dates.slice(0, 14)
+  const [showPast, setShowPast] = useState(false)
+  const [showFuture, setShowFuture] = useState(false)
+
+  // Buscamos dónde está el "hoy" dentro del array gigante de fechas
+  const todayIdx = Math.max(0, dates.indexOf(today))
+  
+  // Calculamos desde dónde hasta dónde cortar el array
+  const startIndex = showPast ? 0 : todayIdx
+  const endIndex = showFuture ? dates.length : todayIdx + 14
+  
+  // Extraemos solo las fechas visibles según los botones que tocó el usuario
+  const visible = dates.slice(startIndex, endIndex)
 
   return (
     <div className="border-b border-zinc-800 px-4 py-3">
+
+      {/* Botón para ver fechas pasadas (solo aparece si hay fechas previas y no las estamos viendo) */}
+      {!showPast && todayIdx > 0 && (
+        <button
+          onClick={() => setShowPast(true)}
+          className="mb-3 text-zinc-600 hover:text-zinc-400 text-ms transition flex items-center gap-1"
+        >
+          ← Ver fechas pasadas
+        </button>
+      )}
 
       <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
         {visible.map(d => {
@@ -59,13 +79,13 @@ export default function DaySelector({ dates, today, selectedDate, dayCounts, onS
         })}
       </div>
 
-      {/* Ver más / ver menos */}
-      {dates.length > 14 && (
+      {/* Botón para ver más fechas hacia el futuro */}
+      {!showFuture && endIndex < dates.length && (
         <button
-          onClick={() => setShowAll(v => !v)}
-          className="mt-2 text-zinc-600 hover:text-zinc-400 text-ms transition"
+          onClick={() => setShowFuture(true)}
+          className="mt-3 text-zinc-600 hover:text-zinc-400 text-ms transition"
         >
-          {showAll ? '← Ver menos' : 'Ver más fechas →'}
+          Ver más fechas →
         </button>
       )}
 

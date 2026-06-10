@@ -206,7 +206,27 @@ export async function createAppointmentAction(data: {
   scheduled_time:     string
   duration_min:       number
 }) {
+  // ── 1. VALIDACIÓN BÁSICA DE TELÉFONO ──
+  const phoneFormated = data.customer_phone.replace(/\D/g, '') // Solo dejamos los números
+  if (phoneFormated.length !== 10) {
+    return { error: 'Por favor, ingresá un número de teléfono válido.' }
+  }
+
+  data.customer_phone = phoneFormated
   const adminClient = createAdminClient()
+  const today = getTodayLocal()
+
+  // ── 2. DEFENSA ANTI-SPAM (Límite de turnos activos) ──
+  const { count: activeAppts } = await adminClient
+    .from('appointments')
+    .select('*', { count: 'exact', head: true })
+    .eq('customer_phone', data.customer_phone)
+    .gte('scheduled_date', today) // Desde hoy en adelante
+    .in('status', ['pending', 'confirmed'])
+
+  if (activeAppts && activeAppts >= 2) {
+    return { error: 'Ya tenés 2 turnos activos. Por favor, cancelá alguno de los anteriores si querés sacar uno nuevo.' }
+  }
 
   // Verificar que el slot sigue libre (condición de carrera)
   const { count } = await adminClient

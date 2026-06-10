@@ -14,7 +14,16 @@ export default async function AgendaPage() {
   if (!user) redirect('/login')
 
   const today   = getTodayLocal()
-  const dates = getNextDays(today, 60)
+  const futureDates = getNextDays(today, 60)
+  // 14 días hacia atrás manualmente
+  const pastDates: string[] = []
+  const [y, m, d] = today.split('-').map(Number)
+  for (let i = 14; i > 0; i--) {
+    const dt = new Date(y, m - 1, d - i)
+    const str = `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, '0')}-${String(dt.getDate()).padStart(2, '0')}`
+    pastDates.push(str)
+  }
+  const dates = [...pastDates, ...futureDates]
   const counts  = await getWeekSummaryAction(dates)
   const initial = await getAgendaDataAction(today)
 
