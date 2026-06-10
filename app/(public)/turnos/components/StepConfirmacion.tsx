@@ -1,6 +1,6 @@
 'use client'
 
-import { ArrowLeft } from "lucide-react"
+import { ArrowLeft, AlertTriangle } from "lucide-react"
 
 const MONTH_FULL = ['enero','febrero','marzo','abril','mayo','junio',
                     'julio','agosto','septiembre','octubre','noviembre','diciembre']
@@ -44,7 +44,7 @@ export default function StepConfirmacion({
 
       <h2 className="text-white text-xl font-bold mb-1">¡Turno solicitado!</h2>
       <p className="text-zinc-400 text-sm mb-6">
-        Te avisamos cuando lo confirmen.
+        Te avisamos cuando lo confirmen, o puedes mirar el estado en el inicio de nuestra página
       </p>
 
       <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 text-left mb-6">
@@ -64,13 +64,22 @@ export default function StepConfirmacion({
         </div>
       </div>
 
+      {/* --- MENSAJE DE ADVERTENCIA --- */}
+      <div className="bg-amber-950/30 border border-amber-900/50 rounded-xl p-3 mb-6 flex items-start gap-3 text-left shadow-sm">
+        <AlertTriangle size={18} className="text-amber-500 shrink-0 mt-0.5" />
+        <p className="text-ms leading-relaxed text-white">
+          <strong className="text-amber-400 font-semibold block mb-0.5">¡Importante!</strong>
+          Copia el link de abajo. Por si necesitás cancelar el turno si no podés asistir.
+        </p>
+      </div>
+
       <div className="space-y-2">
         <button
           onClick={handleShare}
           className="w-full bg-zinc-800 hover:bg-zinc-700 border border-zinc-700
                      text-white font-medium rounded-xl py-3 text-sm transition"
         >
-          Compartir / Guardar link del turno
+          Guardar link del turno
         </button>
         <a 
           href="/"

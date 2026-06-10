@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
-import { ArrowRight } from 'lucide-react'
+import { ArrowRight, Mail } from 'lucide-react'
+import { FaGithubSquare } from 'react-icons/fa';
 import ConsultaTurnoClient from '@/app/(public)/turnos/ConsultaTurnoClient'
 
 export default async function HomePage() {
@@ -73,8 +74,43 @@ export default async function HomePage() {
           </section>
           
         </div>
-
       </div>
+       {/* --- FOOTER / FIRMA DEL DESARROLLADOR --- */}
+      <footer className="mt-auto pt-12 pb-6 w-full flex flex-col items-center justify-center gap-3">
+        <div className="h-px w-24 bg-zinc-800/50 mb-1"></div> {/* Liñita divisoria sutil */}
+        
+        <p className="text-zinc-500 text-xs">
+          Desarrollado por{' '}
+          <a 
+            href="https://github.com/TomasHoffer2002" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="text-zinc-400 hover:text-white font-medium transition-colors"
+          >
+            Tomás Hoffer
+          </a>
+        </p>
+
+        {/* Íconos de contacto (podés borrar los que no uses) */}
+        <div className="flex items-center gap-4 text-zinc-500">
+          <a 
+            href="https://github.com/TomasHoffer2002" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="hover:text-white transition-colors"
+            title="GitHub"
+          >
+            <FaGithubSquare size={30} />
+          </a>
+          <a 
+            href="mailto:tomihoffer2002@gmail.com" 
+            className="hover:text-white transition-colors"
+            title="Enviar Email"
+          >
+            <Mail size={30} />
+          </a>
+        </div>
+      </footer>
     </div>
   )
 }

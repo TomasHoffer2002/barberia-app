@@ -33,11 +33,6 @@ export default function AgendaClient({ today, dates, dayCounts, initialData, ser
   const [appointmentModal, setAppointmentModal] = useState<Appointment | null>(null)
   const [newApptSlot, setNewApptSlot] = useState<{ barberId: string; time: string } | null>(null)
 
-  // Sincronización con el servidor de Next.js
-  useEffect(() => {
-    setData(initialData)
-  }, [initialData])
-
   function showToast(msg: string, ok: boolean) {
     setToast({ msg, ok })
     setTimeout(() => setToast(null), 3000)
@@ -45,17 +40,26 @@ export default function AgendaClient({ today, dates, dayCounts, initialData, ser
 
   const loadDate = useCallback(async (date: string) => {
     setLoading(true)
+    
+    // Revisamos si el usuario está cambiando de día o solo refrescando
+    const isChangingDay = date !== selectedDate 
     setSelectedDate(date)
+    
     const result = await getAgendaDataAction(date)
+    
     if ('error' in result && result.error) {
       showToast(result.error as string, false)
     } else {
-      // Si está todo bien, casteamos la data y la guardamos en el estado
       setData(result as unknown as AgendaData)
-      setActiveBarber(0)
+      
+      // Solo volvemos al barbero 0 si tocaste un día nuevo. 
+      // Si solo confirmaste un turno, te deja viendo al barbero que estabas.
+      if (isChangingDay) {
+        setActiveBarber(0)
+      }
     }
     setLoading(false)
-  }, [])
+  }, [selectedDate]) // <-- Agregamos selectedDate a las dependencias
 
   const barbers      = data.barbers      ?? []
   const appointments = data.appointments ?? []
