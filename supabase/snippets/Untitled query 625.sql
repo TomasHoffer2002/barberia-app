@@ -1,0 +1,1 @@
+ALTER TABLE public.queue ADD COLUMN price numeric DEFAULT 0;

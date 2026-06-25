@@ -66,8 +66,18 @@ export default function QueuePanel({ queue, services, onAddQueue, onAttendQueue,
                 <p className="text-xs text-zinc-500">{q.service_name}</p>
               </div>
               <div className="flex gap-1">
-                <button onClick={() => onAttendQueue(q.id)} className="text-emerald-500 hover:text-emerald-400 text-xs px-1.5 py-1 rounded hover:bg-zinc-800 transition">✓</button>
-                <button onClick={() => onRemoveQueue(q.id)} className="text-zinc-600 hover:text-red-400 text-xs px-1.5 py-1 rounded hover:bg-zinc-800 transition">✕</button>
+                <button 
+                  onClick={() => onAttendQueue(q.id)} 
+                  className="text-emerald-500 hover:text-emerald-400 text-lg px-2.5 py-1.5 rounded-lg hover:bg-zinc-800 transition"
+                >
+                  ✓
+                </button>
+                <button 
+                  onClick={() => onRemoveQueue(q.id)} 
+                  className="text-zinc-600 hover:text-red-400 text-lg px-2.5 py-1.5 rounded-lg hover:bg-zinc-800 transition"
+                >
+                  ✕
+                </button>
               </div>
             </div>
           ))}

@@ -125,7 +125,7 @@ export default function StatsClient({ initialMonth, initialYear, availableYears,
                 <div className="absolute -right-4 -top-4 w-24 h-24 bg-blue-500/10 rounded-full blur-2xl group-hover:bg-blue-500/20 transition-all" />
                 <div className="flex items-center gap-3 mb-4">
                   <div className="bg-zinc-800 p-2.5 rounded-xl"><Scissors size={20} className="text-blue-400" /></div>
-                  <h3 className="text-zinc-400 text-sm font-medium">Turnos Completados</h3>
+                  <h3 className="text-zinc-400 text-sm font-medium">Servicios Completados</h3>
                 </div>
                 <p className="text-4xl font-bold text-white tracking-tight">{stats.completedAppointments}</p>
               </div>

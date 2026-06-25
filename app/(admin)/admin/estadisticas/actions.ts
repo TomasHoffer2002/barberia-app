@@ -34,9 +34,9 @@ export async function getStatsDataAction(month: number, year: number) {
 
   // Rango de fechas del mes seleccionado
   const startDate = `${year}-${String(month).padStart(2, '0')}-01`
-  // Truco para obtener el último día del mes
   const endDate = new Date(year, month, 0).toISOString().split('T')[0] 
 
+  // 1. Buscamos los TURNOS de ese mes
   const { data: appointments } = await supabase
     .from('appointments')
     .select(`
@@ -48,6 +48,18 @@ export async function getStatsDataAction(month: number, year: number) {
     .gte('scheduled_date', startDate)
     .lte('scheduled_date', endDate)
 
+  // 2. Buscamos la COLA de ese mes (Solo los que fueron atendidos)
+  const { data: queueData } = await supabase
+    .from('queue')
+    .select(`
+      price,
+      service_name,
+      barber:barber_id(name)
+    `)
+    .gte('queue_date', startDate)
+    .lte('queue_date', endDate)
+    .eq('is_attended', true)
+
   const stats = {
     totalRevenue: 0,
     completedAppointments: 0,
@@ -56,40 +68,59 @@ export async function getStatsDataAction(month: number, year: number) {
     byService: {} as Record<string, { count: number, revenue: number }>
   }
 
-  if (!appointments) return stats
+  // Procesamos los TURNOS
+  if (appointments) {
+    appointments.forEach(appt => {
+      const isCompleted = appt.status === 'attended' || appt.status === 'confirmed'
+      const isCancelled = appt.status === 'cancelled' || appt.status === 'rejected'
+      const price = Number(appt.price) || 0
 
-  appointments.forEach(appt => {
-    // Consideramos realizados los atendidos (y confirmados por si ya se cobraron)
-    const isCompleted = appt.status === 'attended' || appt.status === 'confirmed'
-    const isCancelled = appt.status === 'cancelled' || appt.status === 'rejected'
-    
-    // Aseguramos que el precio sea numérico
-    const price = Number(appt.price) || 0
+      if (isCancelled) {
+        stats.cancelledAppointments++
+        return 
+      }
 
-    if (isCancelled) {
-      stats.cancelledAppointments++
-      return 
-    }
+      if (isCompleted) {
+        stats.completedAppointments++
+        stats.totalRevenue += price
 
-    if (isCompleted) {
-      stats.completedAppointments++
+        // @ts-ignore
+        const barberName = appt.barber?.name || 'Sin asignar'
+        if (!stats.byBarber[barberName]) stats.byBarber[barberName] = { count: 0, revenue: 0 }
+        stats.byBarber[barberName].count++
+        stats.byBarber[barberName].revenue += price
+
+        // @ts-ignore
+        const serviceName = appt.service?.name || 'Servicio eliminado'
+        if (!stats.byService[serviceName]) stats.byService[serviceName] = { count: 0, revenue: 0 }
+        stats.byService[serviceName].count++
+        stats.byService[serviceName].revenue += price
+      }
+    })
+  }
+
+  // Procesamos la COLA
+  if (queueData) {
+    queueData.forEach(q => {
+      const price = Number(q.price) || 0
+
+      stats.completedAppointments++ // Lo contamos como una atención más
       stats.totalRevenue += price
 
-      // Lógica de Barbero
+      // Barbero (por si alguien de la cola fue atendido por un barbero en específico)
       // @ts-ignore
-      const barberName = appt.barber?.name || 'Sin asignar'
+      const barberName = q.barber?.name || 'Sin asignar'
       if (!stats.byBarber[barberName]) stats.byBarber[barberName] = { count: 0, revenue: 0 }
       stats.byBarber[barberName].count++
       stats.byBarber[barberName].revenue += price
 
-      // Lógica de Servicio
-      // @ts-ignore
-      const serviceName = appt.service?.name || 'Servicio eliminado'
+      // Servicio
+      const serviceName = q.service_name || 'Servicio de cola'
       if (!stats.byService[serviceName]) stats.byService[serviceName] = { count: 0, revenue: 0 }
       stats.byService[serviceName].count++
       stats.byService[serviceName].revenue += price
-    }
-  })
+    })
+  }
 
   return stats
 }

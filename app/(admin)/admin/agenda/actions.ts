@@ -169,6 +169,8 @@ export async function deleteAppointmentAction(id: string) {
 
 // ─── COLA ─────────────────────────────────────────────────────────────────────
 
+// ─── COLA ─────────────────────────────────────────────────────────────────────
+
 export async function addToQueueAction(data: {
   name:         string
   service_name: string
@@ -179,20 +181,34 @@ export async function addToQueueAction(data: {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { error: 'No autenticado' }
 
-  // Calcular siguiente posición
+  // 1. Buscamos el precio del servicio elegido
+  const { data: serviceData } = await supabase
+    .from('services')
+    .select('price')
+    .eq('name', data.service_name)
+    .limit(1)
+    .single()
+
+  // Si por algún motivo no encuentra el precio, le ponemos 0 por defecto
+  const servicePrice = serviceData?.price || 0
+
+  // 2. Calcular siguiente posición en la cola
   const { count } = await supabase
     .from('queue')
     .select('*', { count: 'exact', head: true })
     .eq('queue_date', data.queue_date)
     .eq('is_attended', false)
 
+  // 3. Insertamos el cliente en la cola sumando el precio que encontramos
   const { error } = await supabase.from('queue').insert({
     ...data,
+    price: servicePrice, // 👇 Acá inyectamos el precio a la base de datos
     position: (count ?? 0) + 1,
   })
 
   if (error) return { error: error.message }
 
+  // Refrescamos la vista de la agenda en el cliente
   revalidatePath('/admin/agenda')
   return { success: true }
 }
